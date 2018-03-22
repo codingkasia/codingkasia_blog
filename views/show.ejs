@@ -9,11 +9,16 @@
             </div>
             <div class="description">
                 <p><%- post.body %></p>
+                <!--
+                thank to %- instead of %= you can type your post as html tags 
+                that will be displayed correctly -->
             </div>
+            <!--
             <a class="ui orange basic button" href="/blogs/<%= post._id %>/edit">Edit</a>
             <form id="delete" action="/blogs/<%= post._id %>?_method=DELETE" method="POST">
                 <button class="ui red basic button">Delete</button>
-            </form>
+            </form>-->
+            <button class="ui red basic button"><a href="/">Go Back</a></button>
         </div>
     </div>
     

@@ -81,9 +81,11 @@
           <div class="blog-post">
             <% posts.forEach(function(post) { %>
             <h2 class="blog-post-title" href="/posts/<%=post._id %>"><%=post.title%></a></h2>
-           <img src="<%= post.image %>" width="700px" height="auto">
+           
+             <img src="<%= post.image %>" width="70%" height="auto">
+      
             <p class="blog-post-meta"><span><%= post.created.toDateString() %></span></p>
-            <p><%= post.body %></p>
+            <p><%= post.body.substring(0, 100) %>...</p>
             <a href="/posts/<%= post._id %>">Read More</a>
             
             <% }) %>

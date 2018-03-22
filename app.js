@@ -1,12 +1,14 @@
-var express     = require("express"),
-    app         = express(),
-    bodyParser  = require("body-parser"), //get data out of the form
-    mongoose    = require("mongoose"),
-    Post        = require("./models/post");
+var express             = require("express"),
+    app                 = express(),
+    bodyParser          = require("body-parser"), //get data out of the form
+    mongoose            = require("mongoose"),
+    expressSanitizer    = require("express-sanitizer"),//user can post using html tags but won't be able to run alert() or other script
+    Post                = require("./models/post");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use(expressSanitizer());
 
 
 //INDEX - show all posts
@@ -29,6 +31,9 @@ app.get("/posts/new", function(req, res) {
 })
 //CREATE ROUTE
 app.post("/posts", function(req, res) {
+    req.body.post.body = req.sanitize(req.body.post.body); //we are sanitizing everything that is entered into write a post box
+    //which in our case is under post[body] in our new.ejs file
+    
     Post.create(req.body.post, function(err, newPost) {
         if(err) {
             console.log(err + "ERROR WHEN SUBMITTING NEW POST");
@@ -60,23 +65,12 @@ Post.create({
     
 })
 */
-mongoose.connect("mongodb://localhost/codingkasia_blog");
-//post elements:
-//title
-//image
-//body
-//created (date);
 
-
-
-
-
-
-
-
-
-
-
+//mongodb://kasiarosenberg:Fks!120108@ds153752.mlab.com:53752/codingkasia_blog
+//mongoose.connect("mongodb://localhost/codingkasia_blog");
+var url = process.env.DATABASEURL || "mongodb://localhost/codingkasia_blog";
+mongoose.connect(url);
+//mongoose.connect("mongodb://kasiarosenberg:Fks!120108@ds153752.mlab.com:53752/codingkasia_blog");
 
 
 //start a server
