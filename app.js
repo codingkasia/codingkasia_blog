@@ -1,14 +1,17 @@
-var express             = require("express"),
-    app                 = express(),
-    bodyParser          = require("body-parser"), //get data out of the form
-    mongoose            = require("mongoose"),
-    expressSanitizer    = require("express-sanitizer"),//user can post using html tags but won't be able to run alert() or other script
-    Post                = require("./models/post");
+var bodyParser      = require("body-parser"),//get data out of the form
+methodOverride      = require("method-override"),
+expressSanitizer    = require("express-sanitizer"),//user can post using html tags but won't be able to run alert() or other script
+mongoose            = require("mongoose"),
+express             = require("express"),
+Post                = require("./models/post"),
+app                 = express();
 
-app.use(bodyParser.urlencoded({extended: true}));
+
 app.set("view engine", "ejs");
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
+app.use(methodOverride("_method"));
 
 
 //INDEX - show all posts
@@ -56,6 +59,43 @@ app.get("/posts/:id", function(req, res) {
         }
     })
 })
+
+//EDIT ROUTE
+app.get("/posts/:id/edit", function(req, res) {
+    Post.findById(req.params.id, function(err, foundId){
+        if(err) {
+            console.log("COULD NOT FIND POST'S ID " + err);
+        } else {
+            res.render("edit", {post: foundId});
+        }
+    });
+})
+
+// UPDATE ROUTE
+app.put("/posts/:id", function(req, res){
+    req.body.post.body = req.sanitize(req.body.post.body)
+   Post.findByIdAndUpdate(req.params.id, req.body.post, function(err, updatedPost){
+      if(err){
+          res.redirect("/posts");
+      }  else {
+          res.redirect("/posts/" + req.params.id);
+      }
+   });
+});
+
+// DELETE ROUTE
+app.delete("/posts/:id", function(req, res){
+   //destroy blog
+   Post.findByIdAndRemove(req.params.id, function(err){
+       if(err){
+           res.redirect("/posts");
+       } else {
+           res.redirect("/posts");
+       }
+   })
+   //redirect somewhere
+});
+
 
 /* FOR TESTING IF DB WORKS
 Post.create({
