@@ -70,7 +70,7 @@
              <img src="<%= post.image %>" width="70%" height="auto">
 
             
-            <p><%= post.body.substring(0, 100) %>...</p>
+            <p><%- post.body.substring(0, 100) %>...</p>
             <a href="/posts/<%= post._id %>">Read More</a>
             
             <% }) %>
